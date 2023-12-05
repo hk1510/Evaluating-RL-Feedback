@@ -8,14 +8,15 @@ import sys
 import csv
 
 FEEDBACK = int(sys.argv[1]) # 0: control grp 1, 1: Test grp 1, 2: control grp 2, 3: test grp 2
+NAME = sys.argv[2]
 TEST_EPS = 3
-TRAIN_EPS = 10
+TRAIN_EPS = 5
 seed_list = [27, 8, 19, 7, 6, 478, 2, 8, 77, 20]
 test_seed_list = [3, 4, 18]
 
 og_env = ParkingEnv()
 
-model = SAC.load("model.zip", env=og_env) # trained decision-making agent
+model = SAC.load("SAC_2e5.zip", env=og_env) # trained decision-making agent
 
 if FEEDBACK == 1:
     feedback = 2 # 0 = no feedback, 1 = verification, 2 = correct response, 3 = error flagging
@@ -66,7 +67,7 @@ def play_ep(env, seed):
         if done or truncated:
             env.close()
     env.close()
-    return ret
+    return ret, info
 
 
 #env.reset() # NOTE: Need to 'x' out the window once for screen res update
@@ -77,8 +78,9 @@ if FEEDBACK == 2 or FEEDBACK == 3:
 
 returns = []
 for i in range(TEST_EPS): # Practice the exercise 3 times
-    ret = play_ep(test_env, test_seed_list[i])
+    ret, info = play_ep(test_env, test_seed_list[i])
     returns.append(ret)
+    returns.append(info)
 
 
 for i in range(TRAIN_EPS): # Practice the exercise 3 times
@@ -93,9 +95,12 @@ for i in range(TRAIN_EPS): # Practice the exercise 3 times
         human_env.render()
         if done or truncated:
             human_env.close()
+    
     human_env.close()
     returns.append(ret)
+    returns.append(info)
 
+    # Agent plays if test control or test grp 2
     if FEEDBACK == 2 or FEEDBACK == 3:
         done = truncated = False
         obs, info = agent_env.reset(seed=seed_list[i])
@@ -111,9 +116,13 @@ for i in range(TRAIN_EPS): # Practice the exercise 3 times
             show_video(i)
     
 for i in range(TEST_EPS): # Practice the exercise 3 times
-    ret = play_ep(test_env, test_seed_list[i])
+    ret, info = play_ep(test_env, test_seed_list[i])
     returns.append(ret)
+    returns.append(info)
 
+returns.append(FEEDBACK)
+returns.append(NAME)
 with open('results.csv', 'a') as file:
     writer = csv.writer(file)
     writer.writerow(returns)
+
