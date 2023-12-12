@@ -12,7 +12,7 @@ NAME = sys.argv[2]
 TEST_EPS = 3
 TRAIN_EPS = 5
 seed_list = [27, 8, 19, 7, 6, 478, 2, 8, 77, 20]
-test_seed_list = [3, 4, 18]
+test_seed_list = [0, 4200, 856]
 
 og_env = ParkingEnv()
 
@@ -66,6 +66,7 @@ def play_ep(env, seed):
         env.render()
         if done or truncated:
             env.close()
+            break
     env.close()
     return ret, info
 
@@ -95,6 +96,7 @@ for i in range(TRAIN_EPS): # Practice the exercise 3 times
         human_env.render()
         if done or truncated:
             human_env.close()
+            break
     
     human_env.close()
     returns.append(ret)
@@ -111,6 +113,7 @@ for i in range(TRAIN_EPS): # Practice the exercise 3 times
             agent_env.render()
             if done or truncated:
                 agent_env.close()
+                break
         agent_env.close()
         if FEEDBACK == 3:
             show_video(i)
@@ -122,7 +125,7 @@ for i in range(TEST_EPS): # Practice the exercise 3 times
 
 returns.append(FEEDBACK)
 returns.append(NAME)
-with open('results.csv', 'a') as file:
+with open('results_new_seeds.csv', 'a') as file:
     writer = csv.writer(file)
     writer.writerow(returns)
 
