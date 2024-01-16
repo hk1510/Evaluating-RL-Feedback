@@ -208,7 +208,7 @@ To measure change in performance, we take the difference in average
 returns between the last three episodes and the first three episodes.
 Thus the score for each participant would be denoted as:
 
-$$\label{eq:score}
+$$\label{eq:score_2}
     \text{score} = \frac{1}{3}\sum\_{t = 1}^{3} G_t - \frac{1}{3}\sum\_{t = 14}^{16} G_t$$
 
 where *G*<sub>*t*</sub> represents the return of episode *t*.
